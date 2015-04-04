@@ -6,9 +6,16 @@ targetCompatibility = 1.8
 
 version = '0.1'
 
+mainClassName = "com.wizzardo.downloader.App"
+
 repositories {
-    jCentral()
+    jcenter()
 }
 
 dependencies {
+    compile files(
+            '../epollserver/build/libs/epoll-0.1.jar',
+            '../http/build/libs/http-0.1.jar'
+    )
+    compile 'com.wizzardo.tools:tools:0.12'
 }
