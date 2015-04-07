@@ -1,6 +1,7 @@
 package com.wizzardo.downloader;
 
 import com.wizzardo.downloader.handlers.ListHandler;
+import com.wizzardo.http.FileTreeHandler;
 import com.wizzardo.http.HttpConnection;
 import com.wizzardo.http.HttpServer;
 
@@ -9,13 +10,21 @@ import com.wizzardo.http.HttpServer;
  */
 public class App {
     HttpServer<HttpConnection> server;
+    DownloadJobService downloadJobService = new DownloadJobService();
 
     public App() {
-        server = new HttpServer<>(8080);
+        server = new HttpServer<>(8084);
 
-        server.getUrlMapping().append("/", new ListHandler());
+        server.getUrlMapping()
+                .append("/static/*", new FileTreeHandler("src/main/resources", "/static"))
+                .append("/", new ListHandler(this));
+
+        server.start();
     }
 
+    public DownloadJobService getDownloadJobService() {
+        return downloadJobService;
+    }
 
     public static void main(String[] args) {
         new App();
