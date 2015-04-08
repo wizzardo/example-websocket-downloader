@@ -39,14 +39,16 @@ public class ListHandler implements Handler {
                                 .add(title("List of recent downloads"))
                                 .add(script().src("https://code.jquery.com/jquery-1.11.2.min.js"))
                                 .add(script().src("/static/js/web_socket.js"))
-                                .add(script().src("/static/js/app.js"))
                                 .add(link().href("/static/css/app.css"))
                 )
-                .add(body().add(div().id("container")
-                                        .add(a().href("").text("create new Job"))
-                                        .add(br())
-                                        .each(jobs, this::renderJob)
-                        )
+                .add(body()
+                                .add(div().id("container")
+                                                .add(a().href("").text("create new Job"))
+                                                .add(br())
+                                                .each(jobs, this::renderJob)
+                                )
+                                .add(script().text("var webSocketsUrl = '" + websocketUrl + "';"))
+                                .add(script().src("/static/js/app.js"))
                 );
 
         return render(html);
@@ -54,10 +56,10 @@ public class ListHandler implements Handler {
 
     private Tag renderJob(DownloadJob job) {
         return div().clazz("job " + job.status.name().toLowerCase()).id("job_" + job.id)
-                .add(strong().text("status:")).add(span().clazz("status").text(job.status.toString())).add(br())
-                .add(strong().text("type:")).add(new Tag.Text(job.status.toString())).add(br())
-                .add(strong().text("name:")).add(new Tag.Text(job.name)).add(br())
-                .add(strong().text("params:")).add(new Tag.Text(String.valueOf(job.params))).add(br())
+                .add(strong().text("status: ")).add(span().clazz("status").text(job.status.toString())).add(br())
+                .add(strong().text("type: ")).add(new Tag.Text(job.status.toString())).add(br())
+                .add(strong().text("name: ")).add(new Tag.Text(job.name)).add(br())
+                .add(strong().text("params: ")).add(new Tag.Text(String.valueOf(job.params))).add(br())
                 .add(br())
                 ;
     }

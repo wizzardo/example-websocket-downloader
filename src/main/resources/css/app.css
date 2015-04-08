@@ -1,6 +1,12 @@
+body{
+    margin: 0px;
+}
 
 #container {
     background-color: #f8f7f4;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 20px;
 }
 
