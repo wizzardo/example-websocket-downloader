@@ -1,4 +1,7 @@
-package com.wizzardo.downloader;
+package com.wizzardo.downloader.jobs;
+
+import com.wizzardo.downloader.DownloadJob;
+import com.wizzardo.downloader.DownloadStatus;
 
 import java.util.Collections;
 import java.util.Map;
@@ -14,11 +17,11 @@ public class FakeJob extends DownloadJob {
     }
 
     @Override
-    void execute() {
+    public void execute() {
     }
 
     @Override
-    Map<String, String> requiredParams() {
+    public Map<String, String> requiredParams() {
         return Collections.emptyMap();
     }
 }

@@ -11,6 +11,7 @@ import com.wizzardo.http.response.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.wizzardo.http.html.HtmlBuilder.*;
 
@@ -27,11 +28,11 @@ public class CreateHandler implements Handler {
     @Override
     public Response handle(Request request, Response response) throws IOException {
         response.appendHeader(Header.KV_CONTENT_TYPE_HTML_UTF8);
-        response.setBody(render(new ArrayList<>()));
+        response.setBody(render(app.getDownloadJobService().getTypes()));
         return response;
     }
 
-    private Tag render(List<String> types) {
+    private Tag render(Set<String> types) {
         List<String> withDefaultType = new ArrayList<>(types.size() + 1);
         withDefaultType.add(" -- ");
         withDefaultType.addAll(types);

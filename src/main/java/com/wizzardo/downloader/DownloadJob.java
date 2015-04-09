@@ -14,7 +14,7 @@ public abstract class DownloadJob {
     public volatile DownloadStatus status = DownloadStatus.WAITING;
 
 
-    abstract void execute();
+    public abstract void execute();
 
-    abstract Map<String, String> requiredParams();
+    public abstract Map<String, String> requiredParams();
 }
