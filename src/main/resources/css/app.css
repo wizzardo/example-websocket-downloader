@@ -1,3 +1,7 @@
+html {
+    background-color: #ddd;
+}
+
 body{
     margin: 0px;
 }
@@ -62,4 +66,17 @@ body{
     width: 98%;
     height: 200px;
     margin-top: 10px;
+}
+
+#inputs {
+    margin: 20px;
+}
+#inputs input[type=text] {
+    width: 750px;
+}
+
+.key {
+    text-align: right;
+    width: 100px;
+    display: inline-block;
 }
