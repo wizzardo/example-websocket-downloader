@@ -1,5 +1,6 @@
 package com.wizzardo.downloader;
 
+import com.wizzardo.downloader.handlers.CreateHandler;
 import com.wizzardo.downloader.handlers.ListHandler;
 import com.wizzardo.http.FileTreeHandler;
 import com.wizzardo.http.HttpConnection;
@@ -17,7 +18,8 @@ public class App {
 
         server.getUrlMapping()
                 .append("/static/*", new FileTreeHandler("src/main/resources", "/static"))
-                .append("/", new ListHandler(this));
+                .append("/", new ListHandler(this))
+                .append("/create", new CreateHandler(this));
 
         server.start();
     }

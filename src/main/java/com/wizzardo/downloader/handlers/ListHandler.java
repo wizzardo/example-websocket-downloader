@@ -4,7 +4,6 @@ import com.wizzardo.downloader.App;
 import com.wizzardo.downloader.DownloadJob;
 import com.wizzardo.http.Handler;
 import com.wizzardo.http.html.HtmlBuilder;
-import com.wizzardo.http.html.Renderer;
 import com.wizzardo.http.html.Tag;
 import com.wizzardo.http.request.Header;
 import com.wizzardo.http.request.Request;
@@ -33,7 +32,7 @@ public class ListHandler implements Handler {
         return response;
     }
 
-    private String render(String websocketUrl, List<DownloadJob> jobs) {
+    private Tag render(String websocketUrl, List<DownloadJob> jobs) {
         Tag html = new HtmlBuilder()
                 .add(head()
                                 .add(title("List of recent downloads"))
@@ -43,7 +42,7 @@ public class ListHandler implements Handler {
                 )
                 .add(body()
                                 .add(div().id("container")
-                                                .add(a().href("").text("create new Job"))
+                                                .add(a().href("create").text("create new Job"))
                                                 .add(br())
                                                 .each(jobs, this::renderJob)
                                 )
@@ -51,7 +50,7 @@ public class ListHandler implements Handler {
                                 .add(script().src("/static/js/app.js"))
                 );
 
-        return render(html);
+        return html;
     }
 
     private Tag renderJob(DownloadJob job) {
@@ -62,11 +61,5 @@ public class ListHandler implements Handler {
                 .add(strong().text("params: ")).add(new Tag.Text(String.valueOf(job.params))).add(br())
                 .add(br())
                 ;
-    }
-
-    private String render(Tag tag) {
-        StringBuilder sb = new StringBuilder();
-        tag.render(Renderer.create(sb));
-        return sb.toString();
     }
 }
