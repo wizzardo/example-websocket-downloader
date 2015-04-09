@@ -1,16 +1,23 @@
 package com.wizzardo.downloader;
 
 import com.wizzardo.downloader.jobs.FakeJob;
+import com.wizzardo.tools.misc.UncheckedThrow;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by wizzardo on 04.04.15.
  */
 public class DownloadJobService {
-    private List<DownloadJob> recentJobs = new ArrayList<>();
+    private BlockingQueue<DownloadJob> waiting = new LinkedBlockingQueue<>();
+    private Map<Integer, DownloadJob> allJobs = new LinkedHashMap<>();
+    private LinkedList<DownloadJob> recentJobs = new LinkedList<>();
     private Map<String, Class<? extends DownloadJob>> types;
+    private Set<Integer> ids = new HashSet<>();
+    private Random random = new Random();
 
     public DownloadJobService() {
         recentJobs.add(new FakeJob(DownloadStatus.DONE));
@@ -40,5 +47,34 @@ public class DownloadJobService {
 
     public Set<String> getTypes() {
         return types.keySet();
+    }
+
+    public DownloadJob createByType(String type) {
+        Class<? extends DownloadJob> clazz = types.get(type);
+        if (clazz == null)
+            return null;
+
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw UncheckedThrow.rethrow(e);
+        }
+    }
+
+    public int generateId() {
+        while (true) {
+            int i = random.nextInt(10000);
+            if (ids.add(i))
+                return i;
+        }
+    }
+
+    public void addJob(DownloadJob downloadJob) {
+        waiting.add(downloadJob);
+        allJobs.put(downloadJob.id, downloadJob);
+        recentJobs.addFirst(downloadJob);
+
+        if (recentJobs.size() > 30)
+            allJobs.remove(recentJobs.removeLast().id);
     }
 }
