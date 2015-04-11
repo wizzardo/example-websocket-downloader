@@ -81,9 +81,41 @@ public abstract class DownloadJob {
     public void log(String s) {
         s = s.trim() + '\n';
         webLog.append(s);
+        downloadJobService.broadcast(new JsonObject()
+                        .append("command", "updateLog")
+                        .append("id", id)
+                        .append("log", s)
+        );
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+        downloadJobService.broadcast(new JsonObject()
+                        .append("command", "updateProgress")
+                        .append("id", id)
+                        .append("progress", progress)
+        );
+    }
+
+    public void setProgress(int page, int total) {
+        setProgress((int) (page * 100f / (total)));
     }
 
     public void setStatus(DownloadStatus status) {
         this.status = status;
+        downloadJobService.broadcast(new JsonObject()
+                        .append("command", "updateStatus")
+                        .append("id", id)
+                        .append("status", status)
+                        .append("cssClass", status.name().toLowerCase())
+        );
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public String log() {
+        return webLog.toString();
     }
 }
