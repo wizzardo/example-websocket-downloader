@@ -1,6 +1,7 @@
 package com.wizzardo.downloader;
 
 import com.wizzardo.downloader.jobs.FakeJob;
+import com.wizzardo.tools.json.JsonObject;
 import com.wizzardo.tools.misc.UncheckedThrow;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class DownloadJobService {
         recentJobs.add(new FakeJob(DownloadStatus.FAILED));
 
         initType();
+        new Downloader(this, waiting).start();
     }
 
     private void initType() {
@@ -70,11 +72,16 @@ public class DownloadJobService {
     }
 
     public void addJob(DownloadJob downloadJob) {
+        downloadJob.setDownloadJobService(this);
         waiting.add(downloadJob);
         allJobs.put(downloadJob.id, downloadJob);
         recentJobs.addFirst(downloadJob);
 
         if (recentJobs.size() > 30)
             allJobs.remove(recentJobs.removeLast().id);
+    }
+
+    public void broadcast(JsonObject json) {
+        System.out.println(json.toString());
     }
 }
