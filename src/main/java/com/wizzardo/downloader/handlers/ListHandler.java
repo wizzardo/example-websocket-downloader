@@ -2,6 +2,7 @@ package com.wizzardo.downloader.handlers;
 
 import com.wizzardo.downloader.App;
 import com.wizzardo.downloader.DownloadJob;
+import com.wizzardo.downloader.DownloadStatus;
 import com.wizzardo.http.Handler;
 import com.wizzardo.http.html.HtmlBuilder;
 import com.wizzardo.http.html.Tag;
@@ -54,12 +55,25 @@ public class ListHandler implements Handler {
     }
 
     private Tag renderJob(DownloadJob job) {
-        return div().clazz("job " + job.status.name().toLowerCase()).id("job_" + job.id)
+        Tag tag = div().clazz("job " + job.status.name().toLowerCase()).id("job_" + job.id)
                 .add(strong().text("status: ")).add(span().clazz("status").text(job.status.toString())).add(br())
                 .add(strong().text("type: ")).add(new Tag.Text(job.status.toString())).add(br())
                 .add(strong().text("name: ")).add(new Tag.Text(job.name)).add(br())
                 .add(strong().text("params: ")).add(new Tag.Text(String.valueOf(job.params))).add(br())
                 .add(br())
-                ;
+                .add(div()
+                                .add(a().href("download/" + job.id).style(job.status != DownloadStatus.DONE ? "display: none" : "").text("Download result"))
+                                .add(span().clazz("toggleLog").attr("onclick", "toggleLog(" + job.id + ")").text("toggle log"))
+                );
+
+        if (job.status != DownloadStatus.DONE)
+            tag.add(div().clazz("progress").add(div().clazz("value").style("width: " + job.getProgress() + "%").text("")));
+
+        tag.add(new Tag("textarea").clazz("log").attr("readonly", "true").style("display: none").text(job.log()));
+
+        if (job.status == DownloadStatus.IN_PROGRESS)
+            tag.add(span().clazz("cancel").attr("onclick", "cancel(" + job.id + ")").text("cancel"));
+
+        return tag;
     }
 }
