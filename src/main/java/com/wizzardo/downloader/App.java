@@ -35,10 +35,6 @@ public class App {
         server.start();
     }
 
-    public String getWebSocketUrl() {
-        return "ws://localhost:" + server.getPort() + "/ws";
-    }
-
     public DownloaderWebSocketHandler getWebSocketHandler() {
         return webSocketHandler;
     }

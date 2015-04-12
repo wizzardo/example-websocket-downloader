@@ -31,9 +31,8 @@ function scrollToBottom(textarea) {
     textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
 }
 
-
 // Write your code in the same way as for native WebSocket:
-var ws = new WebSocket(webSocketsUrl);
+var ws = new WebSocket("ws://"+location.hostname+":"+location.port+"/ws");
 ws.onopen = function () {
     console.log("open");
 //            ws.send("Hello");  // Sends a message.

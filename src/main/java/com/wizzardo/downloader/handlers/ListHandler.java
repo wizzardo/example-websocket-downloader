@@ -29,11 +29,11 @@ public class ListHandler implements Handler {
     @Override
     public Response handle(Request request, Response response) throws IOException {
         response.appendHeader(Header.KV_CONTENT_TYPE_HTML_UTF8);
-        response.setBody(render(app.getWebSocketUrl(), app.getDownloadJobService().getRecentJobs()));
+        response.setBody(render(app.getDownloadJobService().getRecentJobs()));
         return response;
     }
 
-    private Tag render(String websocketUrl, List<DownloadJob> jobs) {
+    private Tag render(List<DownloadJob> jobs) {
         Tag html = new HtmlBuilder()
                 .add(head()
                                 .add(title("List of recent downloads"))
@@ -47,7 +47,6 @@ public class ListHandler implements Handler {
                                                 .add(br())
                                                 .each(jobs, this::renderJob)
                                 )
-                                .add(script().text("var webSocketsUrl = '" + websocketUrl + "';"))
                                 .add(script().src("/static/js/app.js"))
                 );
 
