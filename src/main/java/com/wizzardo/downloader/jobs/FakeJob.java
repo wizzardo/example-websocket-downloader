@@ -22,6 +22,16 @@ public class FakeJob extends DownloadJob {
 
     @Override
     public void execute() {
+        for (int i = 0; i < 10; i++) {
+            log("step " + i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
+            }
+
+            setProgress(i + 1, 10);
+        }
+        log("done");
     }
 
     @Override

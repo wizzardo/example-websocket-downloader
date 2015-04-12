@@ -29,7 +29,7 @@ public class ListHandler implements Handler {
     @Override
     public Response handle(Request request, Response response) throws IOException {
         response.appendHeader(Header.KV_CONTENT_TYPE_HTML_UTF8);
-        response.setBody(render("", app.getDownloadJobService().getRecentJobs()));
+        response.setBody(render(app.getWebSocketUrl(), app.getDownloadJobService().getRecentJobs()));
         return response;
     }
 
@@ -62,8 +62,15 @@ public class ListHandler implements Handler {
                 .add(strong().text("params: ")).add(new Tag.Text(String.valueOf(job.params))).add(br())
                 .add(br())
                 .add(div()
-                                .add(a().href("download/" + job.id).style(job.status != DownloadStatus.DONE ? "display: none" : "").text("Download result"))
-                                .add(span().clazz("toggleLog").attr("onclick", "toggleLog(" + job.id + ")").text("toggle log"))
+                                .add(a()
+                                        .href("download/" + job.id)
+                                        .style(job.status != DownloadStatus.DONE ? "display: none" : "")
+                                        .text("Download result")
+                                        .clazz("download"))
+                                .add(span()
+                                        .clazz("toggleLog")
+                                        .attr("onclick", "toggleLog(" + job.id + ")")
+                                        .text("toggle log"))
                 );
 
         if (job.status != DownloadStatus.DONE)
