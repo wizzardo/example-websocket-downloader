@@ -1,5 +1,8 @@
 package com.wizzardo.downloader;
 
+import com.wizzardo.epoll.ByteBufferProvider;
+import com.wizzardo.epoll.ByteBufferWrapper;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;
@@ -8,9 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by wizzardo on 11.04.15.
  */
-public class Downloader extends Thread {
+public class Downloader extends Thread implements ByteBufferProvider {
     private BlockingQueue<DownloadJob> waiting = new LinkedBlockingQueue<>();
     private DownloadJobService downloadJobService;
+    private ByteBufferWrapper byteBufferWrapper = new ByteBufferWrapper(1024 * 50);
 
     Downloader(DownloadJobService downloadJobService, BlockingQueue<DownloadJob> waiting) {
         this.downloadJobService = downloadJobService;
@@ -49,5 +53,10 @@ public class Downloader extends Thread {
         writer.append('\n');
         writer.close();
         return out.toString();
+    }
+
+    @Override
+    public ByteBufferWrapper getBuffer() {
+        return byteBufferWrapper;
     }
 }
