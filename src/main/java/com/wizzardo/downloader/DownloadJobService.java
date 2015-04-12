@@ -19,9 +19,10 @@ public class DownloadJobService {
     private Map<String, Class<? extends DownloadJob>> types;
     private Set<Integer> ids = new HashSet<>();
     private Random random = new Random();
+    private App app;
 
-    public DownloadJobService() {
-        recentJobs.add(new FakeJob(DownloadStatus.DONE));
+    public DownloadJobService(App app) {
+        this.app = app;
         recentJobs.add(new FakeJob(DownloadStatus.FAILED));
 
         initType();
@@ -83,5 +84,6 @@ public class DownloadJobService {
 
     public void broadcast(JsonObject json) {
         System.out.println(json.toString());
+        app.getWebSocketHandler().broadcast(json.toString());
     }
 }
