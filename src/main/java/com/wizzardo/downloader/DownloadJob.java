@@ -1,11 +1,16 @@
 package com.wizzardo.downloader;
 
 import com.wizzardo.http.html.Tag;
+import com.wizzardo.tools.io.ZipTools;
 import com.wizzardo.tools.json.JsonObject;
+import com.wizzardo.tools.misc.Unchecked;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
 
 import static com.wizzardo.http.html.HtmlBuilder.*;
 
@@ -16,7 +21,7 @@ public abstract class DownloadJob {
 
     public String type;
     public String name;
-    public Map params;
+    public Map<String, String> params;
     public int id;
     public volatile DownloadStatus status = DownloadStatus.WAITING;
 
@@ -117,5 +122,17 @@ public abstract class DownloadJob {
 
     public String log() {
         return webLog.toString();
+    }
+
+    public void generateResult(List<File> files) {
+        ZipTools.ZipBuilder builder = new ZipTools.ZipBuilder();
+        builder.method(ZipEntry.STORED);
+        for (File file : files) {
+            builder.append(file);
+        }
+
+        Unchecked.run(() ->
+                        builder.zip(new FileOutputStream(new File(getWorkDir(), name + ".zip")))
+        );
     }
 }
