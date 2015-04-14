@@ -15,7 +15,8 @@ repositories {
 dependencies {
     compile files(
             '../epollserver/build/libs/epoll-0.1.jar',
-            '../http/build/libs/http-0.1.jar'
+            '../http/build/libs/http-0.1.jar',
+            '../Utils/build/libs/tools-all-0.13-SNAPSHOT.jar'
     )
-    compile 'com.wizzardo.tools:tools:0.12'
+//    compile 'com.wizzardo.tools:tools:0.12'
 }
