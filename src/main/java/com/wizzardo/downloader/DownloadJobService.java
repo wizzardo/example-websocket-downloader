@@ -2,7 +2,7 @@ package com.wizzardo.downloader;
 
 import com.wizzardo.downloader.jobs.FakeJob;
 import com.wizzardo.tools.json.JsonObject;
-import com.wizzardo.tools.misc.UncheckedThrow;
+import com.wizzardo.tools.misc.Unchecked;
 
 import java.io.File;
 import java.util.*;
@@ -57,11 +57,7 @@ public class DownloadJobService {
         if (clazz == null)
             return null;
 
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw UncheckedThrow.rethrow(e);
-        }
+        return Unchecked.call(() -> clazz.newInstance());
     }
 
     public int generateId() {
