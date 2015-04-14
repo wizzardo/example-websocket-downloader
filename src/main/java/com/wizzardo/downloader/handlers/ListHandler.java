@@ -62,7 +62,7 @@ public class ListHandler implements Handler {
                 .add(br())
                 .add(div()
                                 .add(a()
-                                        .href("download/" + job.id)
+                                        .href("download/" + job.id + "/" + job.name + ".zip")
                                         .style(job.status != DownloadStatus.DONE ? "display: none" : "")
                                         .text("Download result")
                                         .clazz("download"))

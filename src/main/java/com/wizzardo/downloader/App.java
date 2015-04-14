@@ -21,6 +21,7 @@ public class App {
 
         server.getUrlMapping()
                 .append("/static/*", new FileTreeHandler("src/main/resources", "/static"))
+                .append("/download/*", new FileTreeHandler("/tmp/downloader", "/download"))
                 .append("/list", new ListHandler(this))
                 .append("/", (request, response) -> {
                     response.setRedirectPermanently("list");
