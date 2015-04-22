@@ -25,7 +25,7 @@ public class SaveHandler implements Handler {
     public Response handle(Request request, Response response) throws IOException {
         DownloadJob job = app.getDownloadJobService().createByType(request.param("type"));
         if (job == null) {
-            response.setRedirectTemporarily("create");
+            response.setRedirectTemporarily(app.getUrlMapping().getUrlTemplate("create").getRelativeUrl());
             return response;
         }
 
@@ -43,7 +43,7 @@ public class SaveHandler implements Handler {
         job.id = app.getDownloadJobService().generateId();
         app.getDownloadJobService().addJob(job);
 
-        response.setRedirectTemporarily("list");
+        response.setRedirectTemporarily(app.getUrlMapping().getUrlTemplate("list").getRelativeUrl());
         return response;
     }
 }

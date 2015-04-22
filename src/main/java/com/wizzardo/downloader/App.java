@@ -7,6 +7,7 @@ import com.wizzardo.downloader.handlers.SaveHandler;
 import com.wizzardo.http.FileTreeHandler;
 import com.wizzardo.http.HttpConnection;
 import com.wizzardo.http.HttpServer;
+import com.wizzardo.http.mapping.UrlMapping;
 
 /**
  * Created by wizzardo on 04.04.15.
@@ -20,20 +21,24 @@ public class App {
         server = new HttpServer<>(8084);
 
         server.getUrlMapping()
-                .append("/static/*", new FileTreeHandler("src/main/resources", "/static"))
-                .append("/download/*", new FileTreeHandler("/tmp/downloader", "/download"))
-                .append("/list", new ListHandler(this))
+                .append("/static/*", "static", new FileTreeHandler("src/main/resources", "/static"))
+                .append("/download/*", "download", new FileTreeHandler("/tmp/downloader", "/download"))
+                .append("/list", "list", new ListHandler(this))
                 .append("/", (request, response) -> {
                     response.setRedirectPermanently("list");
                     return response;
                 })
-                .append("/form", new FormHandler(this))
-                .append("/save", new SaveHandler(this))
-                .append("/create", new CreateHandler(this))
+                .append("/form", "form", new FormHandler(this))
+                .append("/save", "save", new SaveHandler(this))
+                .append("/create", "create", new CreateHandler(this))
                 .append("/ws", webSocketHandler = new DownloaderWebSocketHandler())
         ;
 
         server.start();
+    }
+
+    public UrlMapping getUrlMapping() {
+        return server.getUrlMapping();
     }
 
     public DownloaderWebSocketHandler getWebSocketHandler() {
