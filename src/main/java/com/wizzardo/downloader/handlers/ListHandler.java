@@ -56,7 +56,7 @@ public class ListHandler implements Handler {
     private Tag renderJob(DownloadJob job) {
         Tag tag = div().clazz("job " + job.status.name().toLowerCase()).id("job_" + job.id)
                 .add(strong().text("status: ")).add(span().clazz("status").text(job.status.toString())).add(br())
-                .add(strong().text("type: ")).add(new Tag.Text(job.status.toString())).add(br())
+                .add(strong().text("type: ")).add(new Tag.Text(job.type)).add(br())
                 .add(strong().text("name: ")).add(new Tag.Text(job.name)).add(br())
                 .add(strong().text("params: ")).add(new Tag.Text(String.valueOf(job.params))).add(br())
                 .add(br())
