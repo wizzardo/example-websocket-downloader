@@ -31,7 +31,7 @@ public class App {
                 .append("/form", "form", new FormHandler(this))
                 .append("/save", "save", new SaveHandler(this))
                 .append("/create", "create", new CreateHandler(this))
-                .append("/ws", webSocketHandler = new DownloaderWebSocketHandler())
+                .append("/ws", webSocketHandler = new DownloaderWebSocketHandler(this))
         ;
 
         server.start();

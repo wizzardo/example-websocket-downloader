@@ -23,6 +23,9 @@ public class FakeJob extends DownloadJob {
     @Override
     public void execute() {
         for (int i = 0; i < 10; i++) {
+            if (isCanceled())
+                break;
+
             log("step " + i);
             try {
                 Thread.sleep(1000);

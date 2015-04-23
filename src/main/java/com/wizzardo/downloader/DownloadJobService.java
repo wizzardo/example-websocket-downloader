@@ -82,4 +82,8 @@ public class DownloadJobService {
         System.out.println(json.toString());
         app.getWebSocketHandler().broadcast(json.toString());
     }
+
+    public DownloadJob getJob(int id) {
+        return allJobs.get(id);
+    }
 }

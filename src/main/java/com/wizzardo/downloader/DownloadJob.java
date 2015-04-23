@@ -75,6 +75,10 @@ public abstract class DownloadJob {
         dir.delete();
     }
 
+    public void cancel() {
+        setStatus(DownloadStatus.CANCELLED);
+    }
+
     public boolean isCanceled() {
         return status == DownloadStatus.CANCELLED;
     }

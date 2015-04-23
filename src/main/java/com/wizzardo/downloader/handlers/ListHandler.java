@@ -70,6 +70,9 @@ public class ListHandler implements Handler {
                                         .clazz("toggleLog")
                                         .attr("onclick", "toggleLog(" + job.id + ")")
                                         .text("toggle log"))
+                                .addIf(job.status == DownloadStatus.IN_PROGRESS, () -> {
+                                    return span().clazz("cancel").attr("onclick", "cancel(" + job.id + ")").text("cancel");
+                                })
                 );
 
         if (job.status != DownloadStatus.DONE)
