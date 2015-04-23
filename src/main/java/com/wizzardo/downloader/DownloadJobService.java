@@ -86,4 +86,8 @@ public class DownloadJobService {
     public DownloadJob getJob(int id) {
         return allJobs.get(id);
     }
+
+    public Optional<DownloadJob> getJobOptional(int id) {
+        return Optional.ofNullable(getJob(id));
+    }
 }

@@ -37,9 +37,7 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
         JsonObject json = JsonTools.parse(message.asString()).asJsonObject();
         if ("cancel".equals(json.getAsString("command"))) {
             int id = json.getAsInteger("id", 0);
-            DownloadJob job = app.getDownloadJobService().getJob(id);
-            if (job != null)
-                job.cancel();
+            app.getDownloadJobService().getJobOptional(id).ifPresent(DownloadJob::cancel);
         }
     }
 
