@@ -38,6 +38,17 @@ public class DownloadJobsController extends Controller {
     }
 
     public Renderer form() {
-        return renderString("form");
+        DownloadJob job = downloadJobService.createByType(request.param("type"));
+        if (job == null)
+            return renderString("");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "just name of the job");
+        params.putAll(job.requiredParams());
+
+        model().append("job", job);
+        model().append("requiredParams", params);
+
+        return renderView("form");
     }
 }
