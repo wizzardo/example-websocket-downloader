@@ -1,6 +1,7 @@
 package com.wizzardo.downloader;
 
 import com.wizzardo.downloader.jobs.FakeJob;
+import com.wizzardo.http.framework.di.Service;
 import com.wizzardo.tools.json.JsonObject;
 import com.wizzardo.tools.misc.Unchecked;
 
@@ -12,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by wizzardo on 04.04.15.
  */
-public class DownloadJobService {
+public class DownloadJobService implements Service {
     private BlockingQueue<DownloadJob> waiting = new LinkedBlockingQueue<>();
     private Map<Integer, DownloadJob> allJobs = new LinkedHashMap<>();
     private LinkedList<DownloadJob> recentJobs = new LinkedList<>();
@@ -21,12 +22,16 @@ public class DownloadJobService {
     private Random random = new Random();
     private App app;
 
-    public DownloadJobService(App app) {
-        this.app = app;
+    public DownloadJobService() {
         recentJobs.add(new FakeJob(DownloadStatus.FAILED));
 
         initType();
         new Downloader(this, waiting).start();
+    }
+
+    public DownloadJobService(App app) {
+        this();
+        this.app = app;
     }
 
     private void initType() {
