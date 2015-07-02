@@ -5,8 +5,6 @@ import com.wizzardo.downloader.handlers.FormHandler;
 import com.wizzardo.downloader.handlers.ListHandler;
 import com.wizzardo.downloader.handlers.SaveHandler;
 import com.wizzardo.http.FileTreeHandler;
-import com.wizzardo.http.HttpConnection;
-import com.wizzardo.http.HttpServer;
 import com.wizzardo.http.framework.ControllerHandler;
 import com.wizzardo.http.framework.WebApplication;
 import com.wizzardo.http.mapping.UrlMapping;
@@ -23,7 +21,6 @@ public class App {
         server = new WebApplication("localhost", 8084, 4);
 
         server.getUrlMapping()
-                .append("/static/*", "static", new FileTreeHandler("src/main/resources", "/static"))
                 .append("/download/*", "download", new FileTreeHandler("/tmp/downloader", "/download"))
                 .append("/list", "list", new ListHandler(this))
                 .append("/", (request, response) -> {
@@ -38,6 +35,8 @@ public class App {
                 .append("/j/list", new ControllerHandler(DownloadJobsController.class, "list"))
                 .append("/j/create", new ControllerHandler(DownloadJobsController.class, "create"))
                 .append("/j/$id", new ControllerHandler(DownloadJobsController.class, "result"))
+                .append("/j/form", new ControllerHandler(DownloadJobsController.class, "form"))
+                .append("/j/save", new ControllerHandler(DownloadJobsController.class, "save"))
         ;
 
         server.start();

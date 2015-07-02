@@ -2,11 +2,10 @@
 <html>
 <head>
     <title>List of recent downloads</title>
-    <script type="text/javascript" src="/static/js/jquery-1.9.0.min.js"></script>
-    <style type="text/css"></style>
-    <script type="text/javascript" src="/static/js/web_socket.js"></script>
-    <script type="text/javascript" src="/static/js/app.js"></script>
-    <link rel="stylesheet" href="/static/css/app.css">
+    <g:resource dir="css" file="app.css"/>
+    <g:resource dir="js" file="minified-web.js"/>
+    <g:resource dir="js" file="web_socket.js"/>
+    <g:resource dir="js" file="app.js"/>
 </head>
 
 <body>
