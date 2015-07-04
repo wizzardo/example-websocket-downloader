@@ -20,11 +20,15 @@
 
 <script>
     function onSelectJobType() {
-        var params = {type: $('#types').get('value')};
-        $.request('post', '${createLink(action: 'form')}', params)
-                .then(function success(result) {
-                    $('#inputs').set("innerHTML", result);
-                });
+        var params = {type: lib('#types')[0].value};
+        lib.ajax({
+            url: '${createLink(action: 'form')}',
+            type: 'POST',
+            data: params,
+            success: function (result) {
+                lib('#inputs')[0].innerHTML = result;
+            }
+        })
     }
 </script>
 </body>
