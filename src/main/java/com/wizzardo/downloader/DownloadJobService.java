@@ -20,7 +20,8 @@ public class DownloadJobService implements Service {
     private Map<String, Class<? extends DownloadJob>> types;
     private Set<Integer> ids = new HashSet<>();
     private Random random = new Random();
-    private App app;
+
+    DownloaderWebSocketHandler webSocketHandler;
 
     public DownloadJobService() {
         recentJobs.add(new FakeJob(DownloadStatus.FAILED));
@@ -31,7 +32,7 @@ public class DownloadJobService implements Service {
 
     public DownloadJobService(App app) {
         this();
-        this.app = app;
+        webSocketHandler = app.getWebSocketHandler();
     }
 
     private void initType() {
@@ -85,7 +86,7 @@ public class DownloadJobService implements Service {
 
     public void broadcast(JsonObject json) {
         System.out.println(json.toString());
-        app.getWebSocketHandler().broadcast(json.toString());
+        webSocketHandler.broadcast(json.toString());
     }
 
     public DownloadJob getJob(int id) {
