@@ -1,5 +1,6 @@
 package com.wizzardo.downloader;
 
+import com.wizzardo.http.framework.di.Injectable;
 import com.wizzardo.http.websocket.Message;
 import com.wizzardo.http.websocket.WebSocketHandler;
 import com.wizzardo.tools.json.JsonObject;
@@ -12,13 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by wizzardo on 11.04.15.
  */
+@Injectable
 public class DownloaderWebSocketHandler extends WebSocketHandler {
 
     private Set<WebSocketListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private App app;
+    DownloadJobService downloadJobService;
+
+    public DownloaderWebSocketHandler() {
+    }
 
     public DownloaderWebSocketHandler(App app) {
-        this.app = app;
+        downloadJobService = app.getDownloadJobService();
     }
 
     @Override
@@ -37,7 +42,7 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
         JsonObject json = JsonTools.parse(message.asString()).asJsonObject();
         if ("cancel".equals(json.getAsString("command"))) {
             int id = json.getAsInteger("id", 0);
-            app.getDownloadJobService().getJobOptional(id).ifPresent(DownloadJob::cancel);
+            downloadJobService.getJobOptional(id).ifPresent(DownloadJob::cancel);
         }
     }
 

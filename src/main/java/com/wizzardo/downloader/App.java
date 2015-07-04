@@ -7,6 +7,8 @@ import com.wizzardo.downloader.handlers.SaveHandler;
 import com.wizzardo.http.FileTreeHandler;
 import com.wizzardo.http.framework.ControllerHandler;
 import com.wizzardo.http.framework.WebApplication;
+import com.wizzardo.http.framework.di.DependencyFactory;
+import com.wizzardo.http.framework.di.SingletonDependency;
 import com.wizzardo.http.mapping.UrlMapping;
 
 /**
@@ -30,7 +32,7 @@ public class App {
                 .append("/form", "form", new FormHandler(this))
                 .append("/save", "save", new SaveHandler(this))
                 .append("/create", "create", new CreateHandler(this))
-                .append("/ws", webSocketHandler = new DownloaderWebSocketHandler(this))
+                .append("/ws", webSocketHandler = new DownloaderWebSocketHandler())
                 .append("/j/", new ControllerHandler(DownloadJobsController.class, "index"))
                 .append("/j/list", new ControllerHandler(DownloadJobsController.class, "list"))
                 .append("/j/create", new ControllerHandler(DownloadJobsController.class, "create"))
@@ -38,6 +40,8 @@ public class App {
                 .append("/j/form", new ControllerHandler(DownloadJobsController.class, "form"))
                 .append("/j/save", new ControllerHandler(DownloadJobsController.class, "save"))
         ;
+
+        DependencyFactory.get().register(DownloaderWebSocketHandler.class, new SingletonDependency<>(webSocketHandler));
 
         server.start();
     }
