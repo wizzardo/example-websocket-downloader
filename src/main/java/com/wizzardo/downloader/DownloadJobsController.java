@@ -1,8 +1,15 @@
 package com.wizzardo.downloader;
 
+import com.wizzardo.http.MultiValue;
 import com.wizzardo.http.framework.Controller;
+import com.wizzardo.http.framework.di.DependencyFactory;
 import com.wizzardo.http.framework.template.Renderer;
+import com.wizzardo.http.mapping.UrlMapping;
+import com.wizzardo.http.request.Header;
+import com.wizzardo.http.response.Status;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +41,24 @@ public class DownloadJobsController extends Controller {
     }
 
     public Renderer save() {
-        return renderString("save");
+        DownloadJob job = downloadJobService.createByType(request.param("type"));
+        if (job == null)
+            return redirect(DependencyFactory.getDependency(UrlMapping.class).getUrlTemplate(name() + ".create").getRelativeUrl(), Status._303);
+
+        job.name = request.param("name");
+        job.type = request.param("type");
+
+        job.params = new HashMap<>();
+        Map<String, MultiValue> params = request.params();
+        for (Map.Entry<String, MultiValue> entry : params.entrySet()) {
+            if (!entry.getKey().equals("name") && !entry.getKey().equals("type"))
+                job.params.put(entry.getKey(), entry.getValue().getValue());
+        }
+
+        job.id = downloadJobService.generateId();
+        downloadJobService.addJob(job);
+
+        return redirect(DependencyFactory.getDependency(UrlMapping.class).getUrlTemplate(name() + ".list").getRelativeUrl(), Status._303);
     }
 
     public Renderer form() {
