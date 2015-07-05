@@ -40,7 +40,7 @@ var lib = new function () {
             request.send();
     };
 
-    var animate = function (el, settings, time) {
+    var animate = function (el, settings, time, onComplete) {
         var from = [];
         var types = [];
         var keys = [];
@@ -61,7 +61,6 @@ var lib = new function () {
             to.push(parseInt(v));
             keys.push(key);
         }
-        //
 
         var start = +new Date();
         var tick = function () {
@@ -69,17 +68,14 @@ var lib = new function () {
             if (progress > 1)
                 progress = 1;
 
-            //for (var key in settings) {
-            //    el.style[key] = from[key] + (+settings[key] - from[key]) * progress;
-            //}
-
             for (var i = 0; i < to.length; i++) {
-                el.style[keys[i]] = (from[i] + (+to[i] - from[i]) * progress) + types[i];
+                el.style[keys[i]] = (from[i] + (+to[i] - from[i]) * Math.sin(Math.PI / 2 * progress)) + types[i];
             }
 
             if (progress < 1) {
                 (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
-            }
+            } else if (onComplete)
+                onComplete();
         };
 
         tick();
