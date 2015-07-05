@@ -136,7 +136,11 @@ public abstract class DownloadJob {
         }
 
         Unchecked.run(() ->
-                        builder.zip(new FileOutputStream(new File(getWorkDir(), name + ".zip")))
+                        builder.zip(new FileOutputStream(getResult()))
         );
+    }
+
+    public File getResult() {
+        return new File(getWorkDir(), name + ".zip");
     }
 }

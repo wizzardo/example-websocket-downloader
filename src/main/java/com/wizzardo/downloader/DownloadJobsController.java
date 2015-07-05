@@ -36,8 +36,11 @@ public class DownloadJobsController extends Controller {
         return renderView("create");
     }
 
-    public Renderer result() {
-        return renderString("result");
+    public Renderer result() throws IOException {
+        File file = downloadJobService.getJob(params().getInt("id")).getResult();
+        response.setHeader("Content-Disposition", "attachment; filename=" + file.getName().replaceAll("\\s+", "_") + ".zip");
+        response.setBody(file, "application/zip");
+        return  null;
     }
 
     public Renderer save() {
