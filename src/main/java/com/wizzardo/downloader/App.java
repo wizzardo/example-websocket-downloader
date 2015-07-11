@@ -39,6 +39,9 @@ public class App {
                 .append("/j/$id", new ControllerHandler(DownloadJobsController.class, "result"))
                 .append("/j/form", new ControllerHandler(DownloadJobsController.class, "form"))
                 .append("/j/save", new ControllerHandler(DownloadJobsController.class, "save"))
+
+                .append("/r/", new ControllerHandler(DownloadJobsRiotController.class, "list"))
+                .append("/r/list", new ControllerHandler(DownloadJobsRiotController.class, "list"))
         ;
 
         DependencyFactory.get().register(DownloaderWebSocketHandler.class, new SingletonDependency<>(webSocketHandler));
