@@ -1662,9 +1662,12 @@ riot.compile = function(arg, fn) {
 // reassign mount methods
 var mount = riot.mount
 
-riot.mount = function(a, b, c) {
+riot.mount = function(a, b, c, d) {
   var ret
-  riot.compile(function() { ret = mount(a, b, c) })
+  riot.compile(function () {
+    ret = mount(a, b, c);
+    if (typeof d == 'function') d(ret);
+  })
   return ret
 }
 
