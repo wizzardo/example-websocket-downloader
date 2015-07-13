@@ -1,16 +1,15 @@
 <lightbox>
 
-    <div id="lightbox_light" class="white_content">
+    <div style="{!opts.visible ? 'display: none' : ''}" class="white_content">
         <yield/>
-        <a href="javascript:void(0)" onclick={closeLightBox} class="lightbox_close">
+        <a href="javascript:void(0)" onclick={close} class="lightbox_close">
             ✕
         </a>
     </div>
-    <div id="lightbox_fade" class="black_overlay" onclick={closeLightBox}></div>
+    <div style="{!opts.visible ? 'display: none' : ''}" class="black_overlay" onclick={close}></div>
 
     <style>
         .black_overlay {
-            display: none;
             position: fixed;
             top: 0%;
             left: 0%;
@@ -24,7 +23,6 @@
         }
 
         .white_content {
-            display: none;
             position: fixed;
             top: 25%;
             left: 25%;
@@ -63,14 +61,29 @@
         }
 
         .lightbox_close:active {
-            box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75) inset;
+            box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75) inset;
         }
     </style>
 
     <script>
-        closeLightBox() {
-            document.getElementById('lightbox_light').style.display = 'none';
-            document.getElementById('lightbox_fade').style.display = 'none'
+        var that = this;
+        close() {
+            that.opts.visible = false;
+            that.update();
+        }
+        open() {
+            that.opts.visible = true;
+            that.update();
+        }
+
+        console.log('obs: '+(typeof opts.obs))
+        if( typeof opts.obs == 'object') {
+            opts.obs.on('open', function () {
+                that.open()
+            })
+            opts.obs.on('close', function () {
+                that.close()
+            })
         }
     </script>
 </lightbox>
