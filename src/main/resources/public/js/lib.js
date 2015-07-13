@@ -101,7 +101,21 @@ var lib = new function () {
     };
 
     var select = function (selector) {
-        return document.querySelectorAll(selector)
+        var result = document.querySelectorAll(selector);
+        result.each = function (fn) {
+            for (var i = 0; i < result.length; i++) {
+                fn(result[i], i)
+            }
+        };
+        return result
+    };
+
+    var ready = function (fn) {
+        if (document.readyState != 'loading'){
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
     };
 
     var out = select;
@@ -109,5 +123,6 @@ var lib = new function () {
     out.animate = animate;
     out.removeClass = removeClass;
     out.addClass = addClass;
+    out.ready = ready;
     return out
 };
