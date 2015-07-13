@@ -4,10 +4,12 @@ import com.wizzardo.http.framework.di.Injectable;
 import com.wizzardo.http.websocket.Message;
 import com.wizzardo.http.websocket.WebSocketHandler;
 import com.wizzardo.tools.json.JsonArray;
+import com.wizzardo.tools.json.JsonItem;
 import com.wizzardo.tools.json.JsonObject;
 import com.wizzardo.tools.json.JsonTools;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,14 +38,46 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
         handlers.put("jobs", json -> broadcast(new JsonObject()
                         .append("command", "jobs")
                         .append("jobs", new JsonArray().appendAll(downloadJobService.getRecentJobs().stream()
-                                .map(job -> new JsonObject()
-                                        .append("type", job.type)
-                                        .append("name", job.name)
-                                        .append("params", job.params != null ? job.params.toString() : null)
-                                        .append("id", job.id)
-                                        .append("log", job.log())
-                                        .append("status", job.status)).collect(Collectors.toList())))
+                                .map(this::jobToJson).collect(Collectors.toList())))
         ));
+
+        handlers.put("createJob", json -> {
+            DownloadJob job = downloadJobService.createByType(json.getAsString("type"));
+
+            if (job == null)
+                return;
+
+            job.name = json.getAsString("name");
+            job.type = json.getAsString("type");
+
+            job.params = new HashMap<>();
+            for (Map.Entry<String, JsonItem> entry : json.entrySet()) {
+                if (!entry.getKey().equals("name")
+                        && !entry.getKey().equals("type")
+                        && !entry.getKey().equals("command"))
+                    job.params.put(entry.getKey(), entry.getValue().asString());
+            }
+
+            job.id = downloadJobService.generateId();
+
+            broadcast(new JsonObject()
+                            .append("command", "createJob")
+                            .append("job", jobToJson(job))
+            );
+
+            downloadJobService.addJob(job);
+        });
+    }
+
+    private JsonObject jobToJson(DownloadJob job) {
+        return new JsonObject()
+                .append("type", job.type)
+                .append("name", job.name)
+                .append("params", job.params != null ? job.params.toString() : null)
+                .append("id", job.id)
+                .append("progress", job.getProgress())
+                .append("log", job.log())
+                .append("status", job.status);
     }
 
     public DownloaderWebSocketHandler(App app) {
