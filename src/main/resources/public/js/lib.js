@@ -62,15 +62,21 @@ var lib = new function () {
             keys.push(key);
         }
 
+        onAnimationFrame(function (progress) {
+            for (var i = 0; i < to.length; i++) {
+                el.style[keys[i]] = (from[i] + (+to[i] - from[i]) * Math.sin(Math.PI / 2 * progress)) + types[i];
+            }
+        }, time, onComplete);
+    };
+
+    var onAnimationFrame = function (fn, time, onComplete) {
         var start = +new Date();
         var tick = function () {
             var progress = (new Date() - start) / time;
             if (progress > 1)
                 progress = 1;
 
-            for (var i = 0; i < to.length; i++) {
-                el.style[keys[i]] = (from[i] + (+to[i] - from[i]) * Math.sin(Math.PI / 2 * progress)) + types[i];
-            }
+            fn(progress);
 
             if (progress < 1) {
                 (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
@@ -124,5 +130,6 @@ var lib = new function () {
     out.removeClass = removeClass;
     out.addClass = addClass;
     out.ready = ready;
+    out.onAnimationFrame = onAnimationFrame;
     return out
 };
