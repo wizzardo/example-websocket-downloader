@@ -32,7 +32,7 @@ public class App {
                 .append("/form", "form", new FormHandler(this))
                 .append("/save", "save", new SaveHandler(this))
                 .append("/create", "create", new CreateHandler(this))
-                .append("/ws", webSocketHandler = new DownloaderWebSocketHandler())
+                .append("/ws", webSocketHandler = DependencyFactory.getDependency(DownloaderWebSocketHandler.class))
                 .append("/j/", new ControllerHandler(DownloadJobsController.class, "index"))
                 .append("/j/list", new ControllerHandler(DownloadJobsController.class, "list"))
                 .append("/j/create", new ControllerHandler(DownloadJobsController.class, "create"))
@@ -43,8 +43,6 @@ public class App {
                 .append("/r/", new ControllerHandler(DownloadJobsRiotController.class, "list"))
                 .append("/r/list", new ControllerHandler(DownloadJobsRiotController.class, "list"))
         ;
-
-        DependencyFactory.get().register(DownloaderWebSocketHandler.class, new SingletonDependency<>(webSocketHandler));
 
         server.start();
     }
