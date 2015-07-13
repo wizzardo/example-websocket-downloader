@@ -21,7 +21,8 @@
         </g:each>
     </select>
 
-    <form method="post" onsubmit="createJob(); return false;">
+    <form method="post" onsubmit="createJob();
+    return false;">
         <div id="inputs"></div>
         <input type="button" value="create" onclick="createJob()">
     </form>
@@ -33,9 +34,57 @@
 <script src="/static/js/tags/lightbox.tag" type="riot/tag"></script>
 
 <script>
+    var jobs = [];
+    function mount(){
+        jobsTag = riot.mount('jobs', {jobs: jobs}, {}, function (tag) {
+            jobsTag = tag[0];
+        });
+        if (jobsTag)
+            jobsTag = jobsTag[0];
+    }
+
     handlers.jobs = function (data) {
-        t = riot.mount('jobs', data);
+        obs = riot.observable();
+        for (var i = 0; i < data.jobs.length; i++)
+            data.jobs[i].obs = obs
+
+        jobs = data.jobs;
+        mount()
     };
+
+    handlers.createJob = function (data) {
+        jobs.splice(0, 0, data.job);
+        data.job.obs = obs;
+
+        mount()
+    };
+
+    handlers.updateProgress = function (data) {
+        var job = find(jobs, data.id);
+        obs.trigger('progress_update_' + data.id, data.progress, function () {
+            job.progress = data.progress
+        })
+
+    };
+
+    handlers.updateLog = function (data) {
+        var job = find(jobs, data.id);
+        job.log = job.log + data.log;
+        jobsTag.update();
+    };
+
+    handlers.updateStatus = function (data) {
+        var job = find(jobs, data.id);
+        job.status = data.status;
+        jobsTag.update();
+    };
+
+    function find(jobs, id){
+        for (var i = 0; i < jobs.length; i++) {
+            if (jobs[i].id == id)
+                return jobs[i];
+        }
+    }
 
     var lightbox = riot.mount('lightbox', {}, {}, function (tag) {
         lightbox = tag[0];
@@ -54,19 +103,12 @@
     }
 
     function createJob() {
-        var params = {};
+        var params = {command: 'createJob'};
         lib('#inputs input').each(function (el) {
             params[el.name] = el.value
         });
-        lib.ajax({
-            url: '${createLink(controller: 'downloadJobs',action: 'save')}',
-            type: 'POST',
-            data: params,
-            success: function (result) {
-                lightbox.close();
-                ws.send('{"command":"jobs"}');
-            }
-        });
+        ws.send(JSON.stringify(params));
+        lightbox.close();
     }
 </script>
 </body>
