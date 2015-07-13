@@ -47,21 +47,26 @@ function scrollToBottom(textarea) {
 }
 
 // Write your code in the same way as for native WebSocket:
-var ws = new WebSocket("ws://" + location.hostname + ":" + location.port + "/ws");
-ws.onopen = function () {
-    console.log("open");
+function connect(){
+    ws = new WebSocket("ws://" + location.hostname + ":" + location.port + "/ws");
+    ws.onopen = function () {
+        console.log("open");
 //            ws.send("Hello");  // Sends a message.
-};
-ws.onmessage = function (e) {
-    // Receives a message.
-    console.log(e.data);
-    var data = JSON.parse(e.data);
+        ws.send('{"command":"jobs"}');
+    };
+    ws.onmessage = function (e) {
+        // Receives a message.
+        console.log(e.data);
+        var data = JSON.parse(e.data);
 
-    handlers[data.command](data)
-};
-ws.onclose = function () {
-    console.log("closed");
-};
+        handlers[data.command](data)
+    };
+    ws.onclose = function () {
+        console.log("closed");
+        connect();
+    };
+}
+connect();
 
 function cancel(id) {
     ws.send('{"command":"cancel", "id":' + id + '}');
