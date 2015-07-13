@@ -1,9 +1,9 @@
 package com.wizzardo.downloader;
 
-import com.wizzardo.http.framework.di.DependencyFactory;
 import com.wizzardo.http.framework.di.Injectable;
 import com.wizzardo.http.websocket.Message;
 import com.wizzardo.http.websocket.WebSocketHandler;
+import com.wizzardo.tools.json.JsonArray;
 import com.wizzardo.tools.json.JsonObject;
 import com.wizzardo.tools.json.JsonTools;
 
@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by wizzardo on 11.04.15.
@@ -20,7 +21,7 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
 
     private Set<WebSocketListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     protected Map<String, CommandHandler> handlers = new ConcurrentHashMap<>();
-    DownloadJobService downloadJobService = DependencyFactory.getDependency(DownloadJobService.class);
+    DownloadJobService downloadJobService;
 
     protected interface CommandHandler {
         void handle(JsonObject data);
@@ -33,8 +34,16 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
         });
 
         handlers.put("jobs", json -> broadcast(new JsonObject()
-                .append("command", "jobs")
-                .append("jobs", downloadJobService.getRecentJobs()).toString()));
+                        .append("command", "jobs")
+                        .append("jobs", new JsonArray().appendAll(downloadJobService.getRecentJobs().stream()
+                                .map(job -> new JsonObject()
+                                        .append("type", job.type)
+                                        .append("name", job.name)
+                                        .append("params", job.params != null ? job.params.toString() : null)
+                                        .append("id", job.id)
+                                        .append("log", job.log())
+                                        .append("status", job.status)).collect(Collectors.toList())))
+        ));
     }
 
     public DownloaderWebSocketHandler(App app) {
@@ -68,5 +77,9 @@ public class DownloaderWebSocketHandler extends WebSocketHandler {
         for (WebSocketListener listener : listeners) {
             listener.sendMessage(message);
         }
+    }
+
+    public void broadcast(JsonObject json) {
+        broadcast(json.toString());
     }
 }
