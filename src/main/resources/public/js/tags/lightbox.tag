@@ -24,7 +24,7 @@
 
         .white_content {
             position: fixed;
-            top: 25%;
+            top: -250%;
             left: 25%;
             width: 50%;
             height: 50%;
@@ -68,11 +68,14 @@
     <script>
         var that = this;
         close() {
-            that.opts.visible = false;
-            that.update();
+            lib.animate(lib('.white_content')[0], {top:'-250%'}, 200, function(){
+                that.opts.visible = false;
+                that.update();
+            });
         }
         open() {
             that.opts.visible = true;
+            lib.animate(lib('.white_content')[0], {top:'25%'}, 200);
             that.update();
         }
 
