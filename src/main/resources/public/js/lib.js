@@ -50,7 +50,7 @@ var lib = new function () {
             v = v ? v[0] : 0;
             from.push(parseInt(v));
             var type = v && parseInt(v) != 0 ? el.style[key].substring(v.length) : '';
-            v = /^[0-9]+/.exec(settings[key])[0];
+            v = /^-?[0-9]+/.exec(settings[key])[0];
             var t = (typeof settings[key] == 'string') ? settings[key].substring(v.length) : 'px';
             if (type && type != t)
                 throw 'different types: ' + type + ' and ' + t;
@@ -70,21 +70,32 @@ var lib = new function () {
     };
 
     var onAnimationFrame = function (fn, time, onComplete) {
-        var start = +new Date();
-        var tick = function () {
-            var progress = (new Date() - start) / time;
+        var start = null;
+        var raf = window.requestAnimationFrame || function (callback) {
+                setTimeout(callback, 16);
+            };
+
+        var tick = function (timestamp) {
+            if (isNaN(timestamp))
+                timestamp = new Date();
+
+            if (!start)
+                start = timestamp;
+
+            var progress = (timestamp - start) / time;
             if (progress > 1)
                 progress = 1;
 
-            fn(progress);
+            fn(Math.sin(Math.PI / 2 * progress));
 
             if (progress < 1) {
-                (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+                raf(tick);
             } else if (onComplete)
                 onComplete();
+
         };
 
-        tick();
+        raf(tick)
     };
 
     var removeClass = function (el, className) {
@@ -117,7 +128,7 @@ var lib = new function () {
     };
 
     var ready = function (fn) {
-        if (document.readyState != 'loading'){
+        if (document.readyState != 'loading') {
             fn();
         } else {
             document.addEventListener('DOMContentLoaded', fn);
