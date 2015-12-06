@@ -9,6 +9,7 @@ import com.wizzardo.http.html.Tag;
 import com.wizzardo.http.request.Header;
 import com.wizzardo.http.request.Request;
 import com.wizzardo.http.response.Response;
+import com.wizzardo.tools.collections.CollectionTools;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +46,9 @@ public class ListHandler implements Handler {
                                 .add(div().id("container")
                                                 .add(a().href(app.getUrlMapping().getUrlTemplate("create").getRelativeUrl()).text("create new Job"))
                                                 .add(br())
-                                                .each(jobs, this::renderJob)
+                                                .each(jobs, (job, tag) -> {
+                                                    tag.add(renderJob(job));
+                                                })
                                 )
                                 .add(script().src(app.getUrlMapping().getUrlTemplate("static").getRelativeUrl("/js/app.js")))
                 );

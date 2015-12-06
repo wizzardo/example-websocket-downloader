@@ -44,10 +44,11 @@ public abstract class DownloadJob {
 
         return div()
                 .add(input().name("type").type("hidden").value(getClass().getSimpleName()))
-                .each(params.entrySet(), it -> {
-                    return div()
-                            .add(span().clazz("key").text(it.getKey()))
-                            .add(input().type("text").name(it.getKey()).placeholder(it.getValue().replace("\"", "")));
+                .each(params.entrySet(), (it, tag) -> {
+                    tag.add(div()
+                                    .add(span().clazz("key").text(it.getKey()))
+                                    .add(input().type("text").name(it.getKey()).placeholder(it.getValue().replace("\"", "")))
+                    );
                 });
     }
 

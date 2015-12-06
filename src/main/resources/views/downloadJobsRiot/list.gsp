@@ -21,8 +21,7 @@
         </g:each>
     </select>
 
-    <form method="post" onsubmit="createJob();
-    return false;">
+    <form method="post" onsubmit="createJob(); return false;">
         <div id="inputs"></div>
         <input type="button" value="create" onclick="createJob()">
     </form>
@@ -35,7 +34,7 @@
 
 <script>
     var jobs = [];
-    function mount(){
+    function mount() {
         jobsTag = riot.mount('jobs', {jobs: jobs}, {}, function (tag) {
             jobsTag = tag[0];
         });
@@ -64,7 +63,6 @@
         obs.trigger('progress_update_' + data.id, data.progress, function () {
             job.progress = data.progress
         })
-
     };
 
     handlers.updateLog = function (data) {
@@ -79,7 +77,7 @@
         jobsTag.update();
     };
 
-    function find(jobs, id){
+    function find(jobs, id) {
         for (var i = 0; i < jobs.length; i++) {
             if (jobs[i].id == id)
                 return jobs[i];
